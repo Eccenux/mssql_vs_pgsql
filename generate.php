@@ -1,6 +1,7 @@
 <?php
 
 $recordsNum = 1000 * 1000;
+$commitAfter = 10 * 1000;
 
 class ArrayGenerator
 {
@@ -47,7 +48,21 @@ function ipGenerator($i) {
 }
 
 $fp = fopen("insert_$recordsNum.sql", 'w');
+fwrite($fp, 
+	"\nBEGIN TRANSACTION; "
+);
 for ($i = 0; $i < $recordsNum; $i++) {
 	fwrite($fp, "\nINSERT INTO alog (ip,deltaT,method,url) VALUES ('".ipGenerator($i)."',".($i).",'".$methodGenerator->generate($i)."','".$urlGenerator->generate($i)."'); ");
+	if (($i % $commitAfter === $commitAfter - 1) && ($i < $recordsNum - 1)) {
+		fwrite($fp, 
+			"\nCOMMIT; "
+			.
+			"\nBEGIN TRANSACTION; "
+		);
+		
+	}
 }
+fwrite($fp,
+	"\nCOMMIT; "
+);
 fclose($fp);
