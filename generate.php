@@ -47,7 +47,7 @@ function ipGenerator($i) {
 	return (($i/(256*256*256))%256).".".(($i/(256*256))%256).".".(($i/256)%256).".".($i%256);
 }
 
-$fp = fopen("insert_$recordsNum.sql", 'w');
+$fp = fopen("insert_{$recordsNum}.ms.sql", 'w');
 fwrite($fp, 
 	"\nBEGIN TRANSACTION; "
 );
@@ -56,6 +56,8 @@ for ($i = 0; $i < $recordsNum; $i++) {
 	if (($i % $commitAfter === $commitAfter - 1) && ($i < $recordsNum - 1)) {
 		fwrite($fp, 
 			"\nCOMMIT; "
+			.
+			"\nGO "
 			.
 			"\nBEGIN TRANSACTION; "
 		);
