@@ -1,6 +1,6 @@
 <?php
 
-$recordsNum = 100 * 1000;
+$recordsNum = 1000 * 1000;
 
 class ArrayGenerator
 {
